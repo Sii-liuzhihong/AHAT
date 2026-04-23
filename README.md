@@ -3,15 +3,23 @@
   <p><strong>A household task planner optimized for <em>long-horizon</em> planning in <em>large environments</em> given <em>ambiguous human instructions</em></strong></p>
 
   <p>
-    <a href="https://arxiv.org/abs/2602.12244"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2602.12244-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white"></a>
-    <a href="https://sii-liyang2024.github.io/ahat/"><img alt="Project Page" src="https://img.shields.io/badge/Project-Website-2563eb?style=for-the-badge"></a>
-    <a href="https://huggingface.co/Sii-liuzhihong/AHAT-TGPO"><img alt="Hugging Face Model" src="https://img.shields.io/badge/HuggingFace-Model-ffca28?style=for-the-badge&logo=huggingface&logoColor=white"></a>
+    <a href="https://arxiv.org/abs/2602.12244"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2602.12244-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white&labelColor=1e293b"></a>
+    &nbsp;
+    <a href="https://sii-liyang2024.github.io/ahat/"><img alt="Project Page" src="https://img.shields.io/badge/Project-Website-2563eb?style=for-the-badge&logo=safari&logoColor=white&labelColor=1e293b"></a>
+    &nbsp;
+    <a href="https://deepwiki.com/Sii-liuzhihong/AHAT/1-ahat-overview"><img alt="DeepWiki" src="https://img.shields.io/badge/DeepWiki-AHAT_Docs-0ea5e9?style=for-the-badge&logo=readthedocs&logoColor=white&labelColor=1e293b"></a>
   </p>
 
   <p>
-    <a href="https://huggingface.co/datasets/SII-liyang2024/AHAT-dataset"><img alt="Hugging Face Dataset" src="https://img.shields.io/badge/HuggingFace-Dataset-ffca28?style=for-the-badge&logo=huggingface&logoColor=white"></a>
-    <img alt="License" src="https://img.shields.io/badge/License-MIT-16a34a?style=for-the-badge" />
-    <img alt="Status" src="https://img.shields.io/badge/Status-In%20Progress-f59e0b?style=for-the-badge" />
+    <a href="https://huggingface.co/Sii-liuzhihong/AHAT-TGPO"><img alt="Hugging Face Model" src="https://img.shields.io/badge/HuggingFace-Model-ffca28?style=for-the-badge&logo=huggingface&logoColor=white&labelColor=1e293b"></a>
+    &nbsp;
+    <a href="https://huggingface.co/datasets/SII-liyang2024/AHAT-dataset"><img alt="Hugging Face Dataset" src="https://img.shields.io/badge/HuggingFace-Dataset-ffca28?style=for-the-badge&logo=huggingface&logoColor=white&labelColor=1e293b"></a>
+  </p>
+
+  <p>
+    <img alt="License" src="https://img.shields.io/badge/License-MIT-16a34a?style=for-the-badge&logo=opensourceinitiative&logoColor=white&labelColor=1e293b" />
+    &nbsp;
+    <img alt="Status" src="https://img.shields.io/badge/Status-In%20Progress-f59e0b?style=for-the-badge&logo=target&logoColor=white&labelColor=1e293b" />
   </p>
 </div>
 
@@ -34,14 +42,13 @@ This repository contains the official implementation of **AHAT** (Any House Any 
 - **LLM-to-PDDL Grounding:** Maps ambiguous, brief human instructions and textual scene graphs into structured, executable PDDL subgoals.
 - **TGPO Reinforcement Learning:** A novel RL algorithm building on GRPO that incorporates external corrections of intermediate reasoning traces to handle complex intentions.
 - **Symbolic Reasoning Integration:** Leverages explicit symbolic solvers on generated subgoals to guarantee feasible and optimal execution plans.
-
 ## Open-Source Roadmap 🗺️
 
 | Track              | Scope                                  | Status      | Target   |
 | ------------------ | -------------------------------------- | ----------- | -------- |
 | ✅ AHAT Pipeline   | AHAT planning pipeline + example cases | Released    | Done     |
 | ✅ Model Weights   | AHAT model weights                     | Released    | Done     |
-| 🚧 Dataset         | AHAT 50k dataset + 308 scene graphs    | In Progress | One Week |
+| ✅ Dataset         | AHAT 50k dataset + 308 scene graphs    | Released | Done |
 | 🚧 Hi-Pddl-Planner | LLM task decomposition + PDDL planning | In Progress | 2026H2   |
 | 🚧 TGPO RL Loop    | Trace-Guided Policy Optimization loop  | In Progress | 2026H2   |
 
