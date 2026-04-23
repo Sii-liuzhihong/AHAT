@@ -1,0 +1,94 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ahat"
+version = "1.0.0"
+description = "Official Python SDK for AHAT."
+authors = [
+    { name = "Yang Li", email = "liyang372328@gmail.com"},
+    { name = "Zhihong Liu", email = "253108100071@sii.edu.cn"}
+]
+keywords = ["LLM", "task-planning", "robotics", "AHAT", "TGPO"]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+
+dependencies = [
+    "python-dotenv>=1.2.2",
+    "openai>=2.32.0",
+    "typer>=0.24.1",
+    "torch>=2.10.0",
+    "transformers>=5.5.4",
+    "accelerate>=1.13.0",
+    "safetensors>=0.7.0",
+    "huggingface_hub>=1.11.0",
+]
+
+[project.optional-dependencies]
+
+deploy = [
+    "vllm>=0.19.1",
+]
+
+dev = [
+    "ruff",
+]
+
+all = [
+    "ahat[local-model,data,deploy,dev]",
+]
+
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+ahat = "ahat.cli:app"
+
+
+[project.urls]
+"Homepage" = "https://sii-liyang2024.github.io/ahat/"
+"Repository" = "https://github.com/Sii-liuzhihong/AHAT"
+"Lab Website" = "https://www.ropl.ai/"
+
+
+[tool.ruff]
+line-length = 127
+target-version = "py310"
+src = ["src"]
+
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "outputs",
+    "data",
+    "*.egg-info"
+]
+
+[tool.ruff.lint]
+# E: pycodestyle errors
+# F: Pyflakes
+# I: isort
+# W: pycodestyle warnings
+select = ["E", "F", "I", "W"]
+
+# E303: too many blank lines
+# W293: blank line contains whitespace
+ignore = ["E303", "W293"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ahat"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+[tool.ruff.lint.per-file-ignores]
+# F401: Module imported but unused
+"src/ahat/cli.py" = ["F401"]
+"src/ahat/__init__.py" = ["F401"]
+"scripts/*" = ["F401"]

@@ -1,25 +1,120 @@
-# Any House Any Task: Scalable Long-Horizon Planning for Abstract Human Tasks
+<div align="center">
+  <h1><img src="assets/favicon.ico" style="height:40px;vertical-align:middle;margin-right:10px;">Any House Any Task: Scalable Long-Horizon Planning for Abstract Human Tasks</h1>
+  <p><strong>A household task planner optimized for <em>long-horizon</em> planning in <em>large environments</em> given <em>ambiguous human instructions</em></strong></p>
 
-[![arXiv](https://img.shields.io/badge/arXiv-2602.12244-b31b1b.svg)](https://arxiv.org/abs/2602.12244)
-[![Project Page](https://img.shields.io/badge/Project-Website-blue)](xxxxx)
+  <p>
+    <a href="https://arxiv.org/abs/2602.12244"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2602.12244-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white"></a>
+    <a href="https://sii-liyang2024.github.io/ahat/"><img alt="Project Page" src="https://img.shields.io/badge/Project-Website-2563eb?style=for-the-badge"></a>
+    <a href="https://huggingface.co/Sii-liuzhihong/AHAT-TGPO"><img alt="Hugging Face Model" src="https://img.shields.io/badge/HuggingFace-Model-ffca28?style=for-the-badge&logo=huggingface&logoColor=white"></a>
+  </p>
+
+  <p>
+    <a href="https://huggingface.co/datasets/SII-liyang2024/AHAT-dataset"><img alt="Hugging Face Dataset" src="https://img.shields.io/badge/HuggingFace-Dataset-ffca28?style=for-the-badge&logo=huggingface&logoColor=white"></a>
+    <img alt="License" src="https://img.shields.io/badge/License-MIT-16a34a?style=for-the-badge" />
+    <img alt="Status" src="https://img.shields.io/badge/Status-In%20Progress-f59e0b?style=for-the-badge" />
+  </p>
+</div>
+
+<div align="center">
+  <img src="assets/ahat-pipeline.png" width="92%" alt="AHAT Teaser"/>
+  <p style="text-align:left;"><em>In large-scale environments, AHAT receives abstract instructions and a scene graph, generates a decomposition trace and corresponding subgoals. These subgoals are then solved using a PDDL planner, resulting in an executable long-horizon plan that satisfies the user’s requirements.</em></p>
+  <img src="assets/ahat-method-overview.jpg" width="92%" alt="AHAT Overview"/>
+  <p style="text-align:left;"><em>Overview of AHAT. (a) Data Generation: Task synthesis and annotation. (b) Policy Supervision: Supervised fine-tuning (SFT) on the constructed long-horizon household planning dataset. (c) Trace-Guided Policy Optimization: The reinforcement learning loop that integrates external correction of intermediate reasoning traces, improving subgoal generation and task decomposition through constrained sampling, and optimizing the AHAT model for robust planning performance.</em></p>
+</div>
+
+---
+
+## Overview ✨
 
 This repository contains the official implementation of **AHAT** (Any House Any Task), a household task planner optimized for scalable, long-horizon planning in large environments given ambiguous human instructions.
 
-## News 📢
-- **[2026-02]** Our paper is available on [arXiv](https://arxiv.org/abs/2602.12244)!
-- **[2026-02]** Project website is live at [here](xxxxx).
-- **[Coming Soon]** We are currently preparing the codebase for open-source release. Stay tuned!
-
-## Abstract
-Open world language conditioned task planning is crucial for robots operating in large-scale household environments. While many recent works attempt to address this problem using Large Language Models (LLMs) via prompting or training, a key challenge remains scalability. Performance often degrades rapidly with increasing environment size, plan length, instruction ambiguity, and constraint complexity. In this work, we propose **Any House Any Task (AHAT)**, a household task planner optimized for long-horizon planning in large environments given ambiguous human instructions. At its core, AHAT utilizes an LLM trained to map task instructions and textual scene graphs into grounded subgoals defined in the **Planning Domain Definition Language (PDDL)**. These subgoals are subsequently solved to generate feasible and optimal long-horizon plans through explicit symbolic reasoning. To enhance the model's ability to decompose complex and ambiguous intentions, we introduce **TGPO**, a novel reinforcement learning algorithm that integrates external correction of intermediate reasoning traces into **Group Relative Policy Optimization (GRPO)**. Experiments demonstrate that AHAT achieves significant performance gains over state-of-the-art prompting, planning, and learning methods, particularly in human-style household tasks characterized by brief instructions but requiring complex execution plans.
-
 ## Key Features
+
 - **Scalable Long-Horizon Planning:** Robust performance in large-scale household environments without degradation from plan length or constraint complexity.
 - **LLM-to-PDDL Grounding:** Maps ambiguous, brief human instructions and textual scene graphs into structured, executable PDDL subgoals.
 - **TGPO Reinforcement Learning:** A novel RL algorithm building on GRPO that incorporates external corrections of intermediate reasoning traces to handle complex intentions.
 - **Symbolic Reasoning Integration:** Leverages explicit symbolic solvers on generated subgoals to guarantee feasible and optimal execution plans.
 
-## Citation
+## Open-Source Roadmap 🗺️
+
+| Track              | Scope                                  | Status      | Target   |
+| ------------------ | -------------------------------------- | ----------- | -------- |
+| ✅ AHAT Pipeline   | AHAT planning pipeline + example cases | Released    | Done     |
+| ✅ Model Weights   | AHAT model weights                     | Released    | Done     |
+| 🚧 Dataset         | AHAT 50k dataset + 308 scene graphs    | In Progress | One Week |
+| 🚧 Hi-Pddl-Planner | LLM task decomposition + PDDL planning | In Progress | 2026H2   |
+| 🚧 TGPO RL Loop    | Trace-Guided Policy Optimization loop  | In Progress | 2026H2   |
+
+## Installation 🛠️
+
+```bash
+# create conda environment
+conda create -n ahat-os python=3.10 -y
+conda activate ahat-os
+
+# install dependencies
+cd ahat
+pip install -e .
+
+# install deploy dependencies for model serving (vLLM)
+# add fast-downward for solve pddl problems
+git clone https://github.com/aibasel/downward.git fast_downward
+cd fast_downward && ./build.py
+```
+
+- **Add to `.env`**: `FAST_DOWNWARD_PATH=/path/to/fast-downward/fast-downward.py`
+
+## Quick Start ⚡
+
+1. Download the model:
+
+```bash
+ahat download model
+```
+
+2. Download the data:
+
+```bash
+ahat download eval_set
+```
+
+3. Run the planning pipeline:
+
+```bash
+ahat pipeline local
+```
+
+## Alternative (Local Model Serving)
+
+**Download the model and dataset** before running the pipeline in API mode:
+
+1. Deploy the model locally:
+
+```bash
+pip install -e .[deploy]
+python scripts/deploy_model.py
+```
+
+2. Add the API credentials to `.env`:
+
+```bash
+API_KEY=your_api_key
+BASE_URL=http://127.0.0.1:8000/v1
+MODEL_NAME=models/AHAT-TGPO
+```
+
+3. Run the pipeline with API mode:
+
+```bash
+ahat pipeline api
+```
+
+## Training Example 🏋️ (Coming Soon)
+
+## Evaluation 📊 (Coming Soon)
+
+## Citation 📚
+
 If you find our work or code useful, please cite our paper:
 
 ```bibtex
@@ -29,3 +124,14 @@ If you find our work or code useful, please cite our paper:
   journal={arXiv preprint arXiv:2602.12244},
   year={2026}
 }
+```
+
+## License 📄
+
+This project is licensed under the MIT License.
+
+## Acknowledgement 🙏
+
+This project is built on top of excellent open-source ecosystems. We sincerely thank the teams behind [Fast-downward](https://github.com/aibasel/downward), [VAL](https://github.com/KCL-Planning/VAL), [Qwen](https://huggingface.co/Qwen), and [verl](https://github.com/verl-project/verl) for their impactful contributions.
+
+We also welcome you to explore other work from our [lab](https://www.ropl.ai/), such as [UniDomain](https://roboticsjtu.github.io/UniDomain/), [MINT](https://renming-huang.github.io/MINT/), and [Vec-QMDP](https://sii-boluomonster.github.io/VecQMDP-website/).
