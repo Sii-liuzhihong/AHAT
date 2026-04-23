@@ -49,17 +49,22 @@ This repository contains the official implementation of **AHAT** (Any House Any 
 
 ```bash
 # create conda environment
-conda create -n ahat-os python=3.10 -y
-conda activate ahat-os
+conda create -n ahat python=3.10 -y
+conda activate ahat
 
 # install dependencies
 cd ahat
 pip install -e .
 
-# install deploy dependencies for model serving (vLLM)
+# Note: PyTorch dependencies are CUDA-version specific.
+# If you encounter errors, adjust torch/torchvision/torchaudio versions to match your CUDA version(change index-url accordingly).:
+# pip uninstall torch torchvision torchaudio -y
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/xxxx
+
 # add fast-downward for solve pddl problems
 git clone https://github.com/aibasel/downward.git fast_downward
 cd fast_downward && ./build.py
+cd .. && cp .env.example .env
 ```
 
 - **Add to `.env`**: `FAST_DOWNWARD_PATH=/path/to/fast-downward/fast-downward.py`
@@ -91,7 +96,7 @@ ahat pipeline local
 1. Deploy the model locally:
 
 ```bash
-pip install -e .[deploy]
+pip install -e ".[deploy]"
 python scripts/deploy_model.py
 ```
 
