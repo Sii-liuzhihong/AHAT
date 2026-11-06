@@ -1,0 +1,154 @@
+{
+  "date": "2026-10-24",
+  "source_suite": {
+    "tests": 81,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3,
+    "passed": 78
+  },
+  "installed_clean_wheel_suite": {
+    "tests": 81,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4,
+    "passed": 77
+  },
+  "sft": {
+    "source_exit_code": 0,
+    "release_exit_code": 0,
+    "parameter_tensors": 27,
+    "max_abs_difference": 0.0,
+    "exact_weight_parity": true,
+    "device": "CUDA",
+    "steps": 1,
+    "samples": 2
+  },
+  "native_tgpo_source_parity": {
+    "dispatch_tensors": 12,
+    "model_tensors": 27,
+    "all_exact_equal": true,
+    "external_scoring_and_repair": "deterministic fixtures"
+  },
+  "inference": {
+    "prompt_token_count": 4562,
+    "prompt_exact": true,
+    "generation_exact": true,
+    "temperature": 0,
+    "seed": 7,
+    "max_tokens": 16
+  },
+  "live_review": {
+    "seeded_runs": [
+      {
+        "mode": "validate_first",
+        "temperature": 0,
+        "seed": 7,
+        "messages_equal": true,
+        "results_equal": true
+      },
+      {
+        "mode": "always_eval",
+        "temperature": 0,
+        "seed": 7,
+        "messages_equal": true,
+        "results_equal": true
+      }
+    ],
+    "unseeded_full_result_difference_observed": true
+  },
+  "live_repair": {
+    "repair_equal": true,
+    "invalid_tag_fallback_equal": true,
+    "seed": 7,
+    "request_messages_exact": true,
+    "initial_unseeded_responses_equal": false
+  },
+  "production_reward_boundary": {
+    "scores": [
+      1,
+      0
+    ],
+    "reward_sums": [
+      1.0,
+      0.0
+    ],
+    "reply_equal": true,
+    "canonical_extra_info_only": true,
+    "real_solver": true,
+    "reward_config_kwargs_loaded": true
+  },
+  "full_pipeline": {
+    "sft_checkpoint_exported": true,
+    "tgpo_checkpoint_exported": true,
+    "native_inference_completed": true,
+    "scoring_completed": true,
+    "candidates": 1,
+    "final_score": 0,
+    "quality_claim": false
+  },
+  "clean_imports": {
+    "module_count": 16,
+    "installed_site_packages_only": true
+  },
+  "eval_only": {
+    "torch_ray_vllm_absent": true,
+    "real_solver": true,
+    "final_score": 1
+  },
+  "evidence_sha256": {
+    "native-sft/summary.json": "5d6e862886d0e880ce6eb2605f64bb43530223f5e6d7535128fecb5ffe423a4b",
+    "native-default-vs-source.json": "bb502de91ec611d77da6f8aaba3a403eba1aa7c67ac30edcf4c8cf6f1082e840",
+    "llm_evaluation_parity.json": "a674181de12a2e7c740f1594b7c3c3a5f0a90b9347d418b5a91f7a88a1647dad",
+    "llm_repair_parity.json": "50bb8498eb734b27642cb77d6c8fb2315a2947e0df3d275469e0d69fa40e2001",
+    "final-tests.xml": "7408d125550ce4734a13a1b3d347e07742f347c4306be2d0a51b5a0b0fc5d63c",
+    "final-clean-tests.xml": "39e3b18237bec24bc730833ead0823a2e4e85cd1239edc7df4407c11c5a54ae3"
+  },
+  "limits": [
+    "synthetic tasks; no private-data performance claim",
+    "single GPU native training; world_size=1",
+    "live endpoints tested separately; skipped tests are not passes"
+  ],
+  "clean_wheel_native": {
+    "status": "passed",
+    "wheel": "verl-0.5.0.dev0+tgpo.1-py3-none-any.whl",
+    "wheel_sha256": "47774fa7efa0e55e52c34003b79b2f98bdd730f6531f2b3c544175dd1f278347",
+    "isolated_venv_without_system_site_packages": true,
+    "source_checkout_on_pythonpath": false,
+    "module_origins": {
+      "verl": "lib/python3.11/site-packages/verl/__init__.py",
+      "robot_planning": "lib/python3.11/site-packages/robot_planning/__init__.py"
+    },
+    "torch": "2.7.0+cu126",
+    "flash_attn": "2.7.4.post1",
+    "canonical_data": true,
+    "real_task_reward": true,
+    "checkpoint_tensor_count": 27,
+    "final_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "refinement": {
+      "tgpo/selected": 2,
+      "tgpo/repaired": 2,
+      "tgpo/improved": 0
+    },
+    "instruction_matches_extra_info": true,
+    "parameter_change": 1.0132789611816406e-06,
+    "parameter_change_reason": "AdamW weight decay; actual task reward is zero for invalid random-model subgoals",
+    "repair": "deterministic external fixture; native rollout, continuation, actual robot_planning reward, backward and save are real",
+    "runtime_env_yaml_packaged": true,
+    "evidence_directory": "/tmp/tgpo-validation/native-clean-release",
+    "process_exit_code": 0
+  },
+  "standalone_cpu_ci_suite": {
+    "tests": 68,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 43,
+    "passed": 25
+  },
+  "installed_clean_wheel_sha256": "47774fa7efa0e55e52c34003b79b2f98bdd730f6531f2b3c544175dd1f278347"
+}

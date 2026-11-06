@@ -1,27 +1,24 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*$py.class
-
-# Virtual env
-.venv/
-venv/
-.env
-
-# pytest cache
 .pytest_cache/
-
-# macOS
-.DS_Store
-
-# Distribution / packaging
+.ruff_cache/
+*.egg-info/
 build/
 dist/
-*.egg-info/
-
-.sii/
-.vscode/
-
+.venv/
+.env
+checkpoints/
 outputs/
-models/
-data/
+runs/
+wandb/
+/third_party/
+*.parquet
+*.safetensors
+*.pt
+*.bin
+
+
+# Downloaded model weights and public datasets
+/models/
+/data/
+/fast_downward/

@@ -1,81 +1,32 @@
-"""Deploy the AHAT model with vLLM (single GPU).
-
-This script launches the vLLM OpenAI-compatible server on port 8000
-"""
-
-from __future__ import annotations
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Sii-liuzhihong
+"""Serve an exported AHAT/TGPO model with the pinned vLLM backend."""
 
 import argparse
+from pathlib import Path
 import subprocess
 import sys
-from pathlib import Path
-
-from dotenv import load_dotenv
-
-from ahat.configs.constants import (
-		AHAT_MODEL_DEFAULT_PATH, 
-		DEPLOYMENT_DEFAULT_PORT, 
-		DEPLOYMENT_DEFAULT_HOST
-	)
 
 
-
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Deploy AHAT model using vLLM.")
-    parser.add_argument(
-        "--model",
-        default=AHAT_MODEL_DEFAULT_PATH,
-        help=f"Local model path (default: {AHAT_MODEL_DEFAULT_PATH})",
-    )
-    parser.add_argument(
-        "--host",
-        default=DEPLOYMENT_DEFAULT_HOST,
-        help=f"Host address to bind (default: {DEPLOYMENT_DEFAULT_HOST})",
-    )
-    parser.add_argument(
-        "--port",
-        type=int,
-        default=DEPLOYMENT_DEFAULT_PORT,
-        help=f"Port to serve (default: {DEPLOYMENT_DEFAULT_PORT})",
-    )
-    parser.add_argument(
-        "--tensor-parallel-size",
-        type=int,
-        default=1,
-        help="Tensor parallel size (single GPU default: 1)",
-    )
-    return parser.parse_args()
-
-
-def main() -> None:
-    load_dotenv()
-    args = parse_args()
-
-    project_root = Path(__file__).resolve().parents[1]
-    model_path = Path(args.model)
-    if not model_path.is_absolute():
-        model_path = project_root / model_path
-
-    cmd = [
-        sys.executable,
-        "-m",
-        "vllm.entrypoints.openai.api_server",
-        "--model",
-        str(model_path),
-        "--served-model-name",
-        AHAT_MODEL_DEFAULT_PATH,
-        "--host",
-        args.host,
-        "--port",
-        str(args.port),
-        "--tensor-parallel-size",
-        str(args.tensor_parallel_size),
-    ]
-
-    print("Executing:", " ".join(cmd))
-    subprocess.run(cmd, check=True)
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--model", default="models/AHAT-TGPO")
+    parser.add_argument("--served-model-name", default="AHAT-TGPO")
+    parser.add_argument("--host", default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--tensor-parallel-size", type=int, default=1)
+    args = parser.parse_args()
+    model = Path(args.model).expanduser()
+    if not model.is_absolute():
+        model = Path(__file__).resolve().parents[1] / model
+    if not model.is_dir():
+        parser.error(f"local model directory does not exist: {model}")
+    subprocess.run([
+        sys.executable, "-m", "vllm.entrypoints.openai.api_server",
+        "--model", str(model), "--served-model-name", args.served_model_name,
+        "--host", args.host, "--port", str(args.port),
+        "--tensor-parallel-size", str(args.tensor_parallel_size),
+    ], check=True)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,197 @@
+{
+  "date": "2026-10-24",
+  "framework_commit": "a7b8675f9674999e2c6b75a402d95837eca40a3d",
+  "model": {
+    "architecture": "Qwen2ForCausalLM",
+    "parameters": 377856,
+    "initial_checkpoint": "Export of source/public-parity-tested SFT checkpoint",
+    "training_dtype": "bfloat16 mixed precision"
+  },
+  "hardware": {
+    "gpus": 1,
+    "gpu_name": "NVIDIA GeForce RTX 4090",
+    "distributed_backend": "Ray + FSDP (world_size=1, NO_SHARD) + vLLM synchronous rollout"
+  },
+  "software": {
+    "torch": "2.7.0+cu128",
+    "transformers": "4.51.3",
+    "vllm": "0.9.1",
+    "ray": "2.52.1",
+    "tensordict": "0.8.3",
+    "flash-attn": "2.7.4.post1",
+    "uvloop": "0.23.0",
+    "pandas": "2.2.3"
+  },
+  "runs": {
+    "native-grpo": {
+      "status": "passed",
+      "mode": "grpo",
+      "steps": 1,
+      "resume": false,
+      "checkpoint_tensor_count": 27,
+      "max_parameter_change": 0.00010102987289428711,
+      "final_scores": [
+        0.0,
+        0.25,
+        0.0,
+        0.25
+      ],
+      "dispatch_tensor_count": 12,
+      "max_optimizer_first_moment": 0.0037094117142260075
+    },
+    "native-tgpo": {
+      "status": "passed",
+      "mode": "tgpo",
+      "steps": 1,
+      "resume": false,
+      "checkpoint_tensor_count": 27,
+      "max_parameter_change": 0.00010102987289428711,
+      "final_scores": [
+        0.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "dispatch_tensor_count": 12,
+      "max_optimizer_first_moment": 0.004077892750501633
+    },
+    "native-source": {
+      "status": "passed",
+      "mode": "source",
+      "steps": 1,
+      "resume": false,
+      "checkpoint_tensor_count": 27,
+      "max_parameter_change": 0.00010102987289428711,
+      "final_scores": [
+        0.0,
+        1.0,
+        0.0,
+        1.0
+      ],
+      "dispatch_tensor_count": 12,
+      "max_optimizer_first_moment": 0.004077892750501633
+    },
+    "native-canonical-tgpo": {
+      "status": "passed",
+      "mode": "tgpo",
+      "steps": 1,
+      "resume": false,
+      "position_policy": "recompute",
+      "checkpoint_tensor_count": 27,
+      "max_parameter_change": 1.0132789611816406e-06,
+      "final_scores": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dispatch_tensor_count": 12,
+      "canonical_data": true,
+      "real_task_reward": true
+    }
+  },
+  "native_source_parity": {
+    "equal": true,
+    "actor_dispatch_tensors": 12,
+    "checkpoint_tensors": 27,
+    "comparison": "torch.equal for every tensor; original fit and original selection/batch functions read from private source; same native public worker backend"
+  },
+  "checkpoint_resume": {
+    "status": "passed",
+    "mode": "tgpo",
+    "steps": 2,
+    "resume": true,
+    "position_policy": "recompute",
+    "checkpoint_tensor_count": 27,
+    "max_parameter_change": 0.000202178955078125,
+    "final_scores": [
+      0.0,
+      1.0,
+      0.0,
+      1.0
+    ],
+    "dispatch_tensor_count": 12,
+    "optimizer_steps_before": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "optimizer_steps_after": [
+      2.0,
+      2.0,
+      2.0
+    ],
+    "max_change_after_resume": 0.00010114908218383789
+  },
+  "canonical_data_boundary": {
+    "keys": [
+      "ability",
+      "data_source",
+      "evaluate",
+      "extra_info",
+      "index",
+      "instruction",
+      "interaction_kwargs",
+      "reply",
+      "reward_model",
+      "reward_validate",
+      "scene_graph",
+      "score",
+      "tools_kwargs",
+      "uid"
+    ],
+    "rows": 4,
+    "instruction_matches_extra_info": true
+  },
+  "canonical_refinement": {
+    "tgpo/selected": 2,
+    "tgpo/repaired": 2,
+    "tgpo/improved": 0
+  },
+  "unit_and_source_tests": {
+    "passed": 13,
+    "skipped": 0,
+    "source_root_provided": true,
+    "selection_batches": 120,
+    "selection_and_best_candidate_comparisons": 240
+  },
+  "limits": [
+    "External scoring and repair are explicit deterministic fixtures for native original/public numerical parity.",
+    "Canonical-data native run uses actual robot_planning.reward in only_validate mode and fixture repair; random generated outputs correctly score zero.",
+    "Single-GPU smoke tests do not establish multi-GPU throughput or research-model quality."
+  ],
+  "clean_wheel_native_validation": {
+    "status": "passed",
+    "wheel": "verl-0.5.0.dev0+tgpo.1-py3-none-any.whl",
+    "wheel_sha256": "47774fa7efa0e55e52c34003b79b2f98bdd730f6531f2b3c544175dd1f278347",
+    "isolated_venv_without_system_site_packages": true,
+    "source_checkout_on_pythonpath": false,
+    "module_origins": {
+      "verl": "lib/python3.11/site-packages/verl/__init__.py",
+      "robot_planning": "lib/python3.11/site-packages/robot_planning/__init__.py"
+    },
+    "torch": "2.7.0+cu126",
+    "flash_attn": "2.7.4.post1",
+    "canonical_data": true,
+    "real_task_reward": true,
+    "checkpoint_tensor_count": 27,
+    "final_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "refinement": {
+      "tgpo/selected": 2,
+      "tgpo/repaired": 2,
+      "tgpo/improved": 0
+    },
+    "instruction_matches_extra_info": true,
+    "parameter_change": 1.0132789611816406e-06,
+    "parameter_change_reason": "AdamW weight decay; actual task reward is zero for invalid random-model subgoals",
+    "repair": "deterministic external fixture; native rollout, continuation, actual robot_planning reward, backward and save are real",
+    "runtime_env_yaml_packaged": true,
+    "evidence_directory": "/tmp/tgpo-validation/native-clean-release",
+    "process_exit_code": 0
+  }
+}

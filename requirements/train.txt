@@ -1,0 +1,5 @@
+# Install from the repository root; inference includes the pinned vLLM backend.
+-e .[train,inference]
+# FlashAttention is required by the upstream CUDA worker; install a wheel matching
+# Python 3.11, torch 2.7 and your CUDA/C++ ABI, or build flash-attn 2.7.4.post1.
+

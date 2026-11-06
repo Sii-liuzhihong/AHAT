@@ -1,0 +1,30 @@
+# TGPO adds refinement to the upstream GRPO loop; no duplicate worker configuration.
+defaults:
+  - ppo_trainer
+  - _self_
+
+algorithm:
+  adv_estimator: grpo
+
+trainer:
+  trainer_class: verl.trainer.tgpo.trainer.TGPOTrainer
+
+tgpo:
+  # Source defaults; main-result recipe overrides these explicitly.
+  select_num: 2
+  continuations_per_sample: 1
+  reward_threshold: 1.0
+  # Correct stale positions from the development code. legacy is for parity tests.
+  position_policy: recompute
+
+task:
+  output_format: subgoal
+  # Task context is stored only in extra_info in public parquet files.
+  metadata_fields: [instruction, scene_graph]
+  prefix_formatter: robot_planning.repair.format_repair_prefix
+  repair:
+    callable: robot_planning.repair.repair_batch_records
+    kwargs: {}
+
+reward_model:
+  reward_manager: batch

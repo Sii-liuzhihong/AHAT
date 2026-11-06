@@ -1,0 +1,193 @@
+
+You are tasked with analyzing action sequences executed by a household service robot in a house holding scenario. Follow the rules below to process the input and generate the required output:
+
+## 1. Input Overview
+
+You will receive four pieces of information in the following fixed format:
+
+House_content: A string listing all details of the house, including rooms, furniture, items, and their locations.
+
+Related_objects_details: Objects with state details highly related to the Action_sequence. Use this as the primary source of object states when available.
+
+Action_sequence: A sequence of actions performed by the household service robot. Note: All actions are executable and have been successfully completed (no feasibility checking).
+
+Instruction: A specific household task that the service robot is required to complete.
+
+## Allowed actions: 
+navigate: Moves an agent from one location to another.
+
+pick_from_surface: Picks up an object from a surface.
+
+place_on_surface: Places an object onto a surface.
+
+pick_from_receptacle: Picks up an object from an open receptacle.
+
+place_in_receptacle: Places an object into an open receptacle.
+
+open: Opens a receptacle or device that can be opened.
+
+close: Closes an open receptacle or device.
+
+power_on: Turns on a powerable device.
+
+power_off: Turns off a powered-on device.
+
+fill_from_faucet: Fills a container from a faucet.
+
+dispense_from_device: Dispenses liquid from a powered-on device into a container placed on it.
+
+pour_into: Pours liquid from one container into another, potentially transferring heat.
+
+place_next_to_surface: Places an object next to another object on a surface.
+
+place_next_to_inside: Places an object next to another object inside an open receptacle.
+
+clean_item_with_faucet: Cleans an item that requires water using a faucet.
+
+clean_item: Cleans an item using a cleaning tool (for items not requiring water).
+
+clean_furniture: Cleans furniture using a cleaning tool.
+
+clean_room_floor: Cleans the floor of a room using a floor cleaner.
+
+fill_device_with_water: Fills a device with water from its built-in faucet.
+
+pour: Pours liquid from a container into a faucet-equipped furniture, emptying and cooling the container.
+
+light_on: Turns on the light of an object.
+
+move_furniture_to_room: Moves furniture (and the agent) from one room to another.
+
+move_device_to_room: Moves a device (and the agent) from one room to another.
+
+hand_over_to_person: Hands over an object from the agent to a person.
+
+
+## 2. Task Steps
+
+You must complete three core tasks in order:
+
+### a. Summarize the Action Sequence
+
+Provide a factual, detailed summary of what the robot accomplished.
+
+* Include which item moved from where to where, which furniture/device was operated, and in which room context.
+
+### b. Evaluate Task Completion and Performance (Preference/Appropriateness-Aware)
+
+Your evaluation MUST follow this exact order inside <Evaluate>:
+
+1. **Grounding to House_content and states**
+
+* Cite relevant rooms/furniture/items from House_content.
+* Use Related_objects_details to support state-based judgments (clean/dirty, open/closed, on/off, filled/empty, etc.). If provided states already satisfy a requirement, accept it.
+
+2. **Instruction Satisfaction (Correctness)**
+
+* Decide whether explicit instruction requirements are met.
+* Do NOT treat absent actions as missing outcomes if the final state is provided and satisfies the instruction.
+
+3. **Intent Fulfillment Quality (Appropriateness / Utility) — Mandatory**
+
+* If the instruction is explicit (e.g., “bring the apple”), evaluate primarily on correctness.
+* If the instruction is underspecified/goal-oriented (e.g., “I’m hungry, bring me something to eat”), you MUST judge whether the chosen item/action best matches the intent using common-sense criteria (goal fit, typical human expectation), strictly within House_content and allowed Actions 
+navigate: Moves an agent from one location to another.
+
+pick_from_surface: Picks up an object from a surface.
+
+place_on_surface: Places an object onto a surface.
+
+pick_from_receptacle: Picks up an object from an open receptacle.
+
+place_in_receptacle: Places an object into an open receptacle.
+
+open: Opens a receptacle or device that can be opened.
+
+close: Closes an open receptacle or device.
+
+power_on: Turns on a powerable device.
+
+power_off: Turns off a powered-on device.
+
+fill_from_faucet: Fills a container from a faucet.
+
+dispense_from_device: Dispenses liquid from a powered-on device into a container placed on it.
+
+pour_into: Pours liquid from one container into another, potentially transferring heat.
+
+place_next_to_surface: Places an object next to another object on a surface.
+
+place_next_to_inside: Places an object next to another object inside an open receptacle.
+
+clean_item_with_faucet: Cleans an item that requires water using a faucet.
+
+clean_item: Cleans an item using a cleaning tool (for items not requiring water).
+
+clean_furniture: Cleans furniture using a cleaning tool.
+
+clean_room_floor: Cleans the floor of a room using a floor cleaner.
+
+fill_device_with_water: Fills a device with water from its built-in faucet.
+
+pour: Pours liquid from a container into a faucet-equipped furniture, emptying and cooling the container.
+
+light_on: Turns on the light of an object.
+
+move_furniture_to_room: Moves furniture (and the agent) from one room to another.
+
+move_device_to_room: Moves a device (and the agent) from one room to another.
+
+hand_over_to_person: Hands over an object from the agent to a person.
+.
+* Do NOT evaluate “optimality” as fewer steps or shorter paths.
+
+4. **Better fulfillment (Mandatory when applicable)**
+
+* If a clearly better way to fulfill the intent exists using only House_content items and allowed action, write:
+  **Better fulfillment:** [better choice + short rationale grounded in intent + explicit reference to the relevant House_content items]
+
+5. **Strengths**
+
+* List what the plan did well for correctness and/or intent fulfillment.
+
+6. **Shortcomings + House_content-grounded suggestions (Mandatory format)**
+   This section is REQUIRED even if the task is completed. If there are no shortcomings, write exactly: **"No shortcomings were found."**
+   If shortcomings exist, you MUST:
+
+* Describe the shortcoming(s) precisely.
+* Provide **actionable improvement suggestions that are feasible** given House_content and allowed action.
+* Your suggestions MUST be grounded in House_content by explicitly referencing the specific available item(s)/furniture/location(s) that enable the improvement.
+* Do NOT mention or rely on any item or tool not listed in House_content.
+* Do NOT suggest actions outside allowed action.
+
+**Required phrasing inside <Evaluate> when shortcomings exist:**
+
+* **Shortcoming:** ...
+* **Suggestion (based on House_content):** ... (must reference specific items/locations from House_content and only allowed actions)
+
+If there are multiple shortcomings, repeat the pair:
+
+* **Shortcoming 1:** ... / **Suggestion (based on House_content):** ...
+* **Shortcoming 2:** ... / **Suggestion (based on House_content):** ...
+
+## 3. Determine the Result
+
+* **Good**: Explicit requirements are satisfied AND no clear Better fulfillment exists; no meaningful shortcomings.
+* **Normal**: Explicit requirements satisfied BUT Better fulfillment exists OR there are non-critical shortcomings with feasible House_content-grounded suggestions.
+* **Bad**: Explicit requirements not satisfied, or contradictions prevent satisfying them.
+
+## 4. Evaluation Rules
+
+a. Focus on whether the final state meets the instruction requirements; if states indicate satisfaction, accept it even if an action is absent.
+b. Do not rate Bad if explicit requirements are clearly satisfied; use Normal for “could be better” cases.
+c. House_content is the only set of interactive items; do not reference non-existent items.
+d. Actions are limited to allowed action; do not penalize outside capability.
+e. “Better fulfillment” is about intent/appropriateness, not step count.
+
+## 5. Output Format (Mandatory)
+
+Return exactly these three sections and nothing else:
+
+<Summary>[...]</Summary>
+<Evaluate>[Grounding → Correctness → Intent Fulfillment → Better fulfillment (if any) → Strengths → Shortcomings + Suggestion (based on House_content)]</Evaluate>
+<Result>[Good / Normal / Bad]</Result>

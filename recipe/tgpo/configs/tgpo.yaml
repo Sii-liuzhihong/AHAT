@@ -1,0 +1,67 @@
+# @package _global_
+defaults:
+  - tgpo_trainer
+  - _self_
+
+data:
+  train_files: ${oc.env:TGPO_TRAIN_DATA}
+  val_files: ${oc.env:TGPO_VAL_DATA}
+  train_batch_size: 128
+  max_prompt_length: 15000
+  max_response_length: 3096
+  filter_overlong_prompts: true
+  truncation: error
+
+custom_reward_function:
+  path: ${oc.env:TGPO_REWARD_PATH}
+  name: compute_total_score_subgoal_batch
+
+actor_rollout_ref:
+  model:
+    path: ${oc.env:TGPO_MODEL}
+    use_remove_padding: true
+    enable_gradient_checkpointing: true
+  actor:
+    optim:
+      lr: 1.0e-6
+    ppo_mini_batch_size: 32
+    ppo_micro_batch_size_per_gpu: 4
+    use_kl_loss: true
+    kl_loss_coef: 0.0005
+    kl_loss_type: low_var_kl
+    entropy_coeff: 0
+  rollout:
+    name: vllm
+    n: 8
+    tensor_model_parallel_size: 2
+    gpu_memory_utilization: 0.8
+    log_prob_micro_batch_size_per_gpu: 4
+    enable_chunked_prefill: false
+    # vLLM requires this budget >= prompt+response length when chunking is off.
+    max_num_batched_tokens: 32768
+  ref:
+    log_prob_micro_batch_size_per_gpu: 4
+    fsdp_config:
+      param_offload: true
+
+tgpo:
+  select_num: 2
+  continuations_per_sample: 8
+  reward_threshold: 0.51
+
+task:
+  output_format: subgoal
+  repair:
+    kwargs:
+      prompt: subgoal_fix_cot_0102_prompt
+
+trainer:
+  project_name: tgpo
+  experiment_name: subgoal_tgpo
+  n_gpus_per_node: 8
+  nnodes: 1
+  logger: [console]
+  total_epochs: 10
+  save_freq: 50
+  test_freq: 50
+  default_local_dir: ${oc.env:TGPO_OUTPUT,outputs/tgpo}

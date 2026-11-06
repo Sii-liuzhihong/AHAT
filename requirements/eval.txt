@@ -1,0 +1,3 @@
+# CPU scoring of existing predictions. Fast Downward is installed separately.
+PyYAML>=6,<7
+

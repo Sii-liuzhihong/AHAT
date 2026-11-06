@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-06",
+  "base_ahat_commit": "0990e759babb7eccacf05e2a79904116bd49608b",
+  "algorithm_changes": false,
+  "excluded_package": "src/ahat",
+  "readme_title": "TGPO: Trace-Guided Policy Optimization",
+  "source_tree_sha256": {
+    "verl": "8bf18b3db251c072f852cb40187968d49198572442f09a77164e02e81efe24bd",
+    "robot_planning": "54014c5df5f2bff10a5b6c7b32848c43eb654b8997fa1dcbd8503802706e1811",
+    "recipe": "70cfaf08566583eab04c04840ddd57af6b413c232a54b8fbaf61f796bf4a6da7",
+    "tests": "13d047b987579530b0666c9ce87597f1b9026797fc396c092ce6e6e732ba8026"
+  },
+  "files_compared": {
+    "verl": 329,
+    "robot_planning": 46,
+    "recipe": 10,
+    "tests": 11
+  },
+  "cpu_suite": {
+    "tests": 68,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 43,
+    "passed": 25
+  },
+  "real_planner_example_score": 1,
+  "pip_check": "passed",
+  "ruff": "passed",
+  "gpu_training_rerun": false
+}

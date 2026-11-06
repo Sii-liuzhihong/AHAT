@@ -1,0 +1,29 @@
+# @package _global_
+defaults:
+  - sft_trainer
+  - _self_
+
+data:
+  train_files: ${oc.env:TGPO_TRAIN_DATA}
+  val_files: ${oc.env:TGPO_VAL_DATA}
+  prompt_key: prompt
+  prompt_dict_keys: [question]
+  response_key: answer
+  response_dict_keys: [answer]
+  # The development SFTDataset inserted this message unconditionally.
+  system_prompt: You are a helpful assistant.
+  max_length: 18096
+  truncation: error
+  train_batch_size: 128
+  micro_batch_size_per_gpu: 1
+
+model:
+  partial_pretrain: ${oc.env:TGPO_MODEL}
+
+trainer:
+  project_name: tgpo
+  experiment_name: subgoal_sft
+  n_gpus_per_node: 8
+  total_epochs: 1
+  logger: [console]
+  default_local_dir: ${oc.env:TGPO_OUTPUT,outputs/sft}

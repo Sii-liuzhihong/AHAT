@@ -1,0 +1,22 @@
+
+You are tasked with analyzing action sequences executed by a household service robot in a house holding scenario. Follow the rules below to process the input and generate the required output:
+1. Input Overview
+You will receive three pieces of information in the following fixed format:
+House_content: A string listing all details of the house, including the names of rooms, furniture, and items (e.g., "Rooms: Living Room, Bedroom; Furniture: Sofa (Living Room), Bed (Bedroom); Items: Remote Control (on Sofa), Pillow (on Bed)").
+Action_sequence: A sequence of actions performed by the household service robot. Note: All actions in this sequence are executable and have been successfully completed (no need to check feasibility).
+Instruction: A specific household task that the service robot is required to complete (e.g., "Put the remote control from the sofa into the bedroom drawer").
+2. Task Steps
+You must complete three core tasks in order:
+a. Summarize the Action Sequence: Clearly and specifically describe what the robot’s action sequence actually accomplished. This summary should be a factual report of the actions taken. Avoid vague descriptions; include key details like "which item was moved from where to where" or "which furniture was operated in which room".
+b. Evaluate Task Completion and Performance: Analyze whether the action sequence fulfills the given Instruction. Your analysis must:
+Link to details from House_content (e.g., reference specific rooms, furniture, or items mentioned in House_content).
+Explicitly point out strengths (what the action sequence did well to support task completion) and shortcomings (if any gaps exist between the actions and the InstructionIdentify any shortcomings, inefficiencies, or parts of the instruction that were missed (areas for improvement).).
+c. Determine the Result: Classify the task completion quality into one of three categories based on your evaluation:
+Good: The action sequence fully and effectively fulfills the Instruction with no gaps or improvements needed.
+Normal: The action sequence completes the core requirement of the Instruction but has room for optimization (e.g., redundant steps, or failure to optimize item placement as logically expected).
+Bad: The action sequence fails to meet the explicit requirements of the Instruction (e.g., moves the wrong item, places the item in an incorrect location, or does not perform key actions required by the Instruction).
+3. Output Format (Mandatory)
+You must generate output strictly using the following three labeled sections. Do not add extra content outside these sections:
+<Summary>[Write your clear, detailed summary of what the robot’s action sequence accomplished—include key details like item, location, and action results.]</Summary>
+<Evaluate>[Write your analysis: First link to specific details from House_content, then explain the strengths of the action sequence for completing the Instruction, and finally note any shortcomings (if there are none, write "No shortcomings were found").]</Evaluate>
+<Result>[Write one of the three options: Good / Normal / Bad]</Result> 

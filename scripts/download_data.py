@@ -1,54 +1,27 @@
-"""Download AHAT dataset from Hugging Face.
-
-By default, this script downloads the dataset snapshot from
-`AHAT_DATASET_REPO_ID` and stores it under
-`AHAT_DATASET_DEFAULT_PATH` in the current project.
-"""
-
-from __future__ import annotations
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Sii-liuzhihong
+"""Download the AHAT dataset from Hugging Face."""
 
 import argparse
 from pathlib import Path
 
-from huggingface_hub import snapshot_download
 
-from ahat.configs.constants import AHAT_DATASET_DEFAULT_PATH, AHAT_DATASET_REPO_ID
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo-id", default="SII-liyang2024/AHAT-dataset")
+    parser.add_argument("--output-dir", default="data/AHAT-dataset")
+    parser.add_argument("--revision", help="Optional pinned Hugging Face revision")
+    args = parser.parse_args()
+    # Keep --help usable without installing optional download dependencies.
+    from huggingface_hub import snapshot_download
 
-
-def parse_args() -> argparse.Namespace:
-	parser = argparse.ArgumentParser(description="Download AHAT dataset from Hugging Face.")
-	parser.add_argument(
-		"--repo-id",
-		default=AHAT_DATASET_REPO_ID,
-		help=f"Hugging Face dataset repository ID (default: {AHAT_DATASET_REPO_ID})",
-	)
-	parser.add_argument(
-		"--output-dir",
-		default=AHAT_DATASET_DEFAULT_PATH,
-		help=f"Local directory to save dataset (default: {AHAT_DATASET_DEFAULT_PATH})",
-	)
-	return parser.parse_args()
-
-
-def main() -> None:
-	args = parse_args()
-
-	project_root = Path(__file__).resolve().parents[1]
-	local_dir = Path(args.output_dir)
-	if not local_dir.is_absolute():
-		local_dir = project_root / local_dir
-
-	local_dir.mkdir(parents=True, exist_ok=True)
-
-	print(f"Downloading dataset {args.repo_id} to {local_dir}...")
-	snapshot_download(
-		repo_id=args.repo_id,
-		repo_type="dataset",
-		local_dir=str(local_dir),
-		local_dir_use_symlinks=False,
-	)
-	print("Dataset download completed.")
+    destination = Path(args.output_dir).expanduser()
+    if not destination.is_absolute():
+        destination = Path(__file__).resolve().parents[1] / destination
+    snapshot_download(repo_id=args.repo_id, repo_type="dataset",
+                      local_dir=str(destination), revision=args.revision)
+    print(f"Downloaded {args.repo_id} to {destination}")
 
 
 if __name__ == "__main__":
-	main()
+    main()

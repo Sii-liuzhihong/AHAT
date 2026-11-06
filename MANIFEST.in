@@ -1,0 +1,17 @@
+include LICENSE NOTICE UPSTREAM.md THIRD_PARTY_NOTICES.md
+recursive-include verl/trainer/config *.yaml
+include verl/trainer/*.yaml
+include verl/version/version
+recursive-include robot_planning/prompts *.txt *.json
+recursive-include recipe/tgpo *.sh *.yaml *.md *.jsonl *.pddl
+recursive-include docs/tgpo *.md *.json
+recursive-include requirements *.txt
+recursive-include scripts *.sh *.py
+recursive-include tests *.py
+global-exclude *.py[cod]
+global-exclude __pycache__
+
+recursive-include LICENSES *.txt
+recursive-include assets *.png *.jpg *.ico
+recursive-include examples *.pddl
+include .env.example

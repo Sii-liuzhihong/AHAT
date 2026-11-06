@@ -1,0 +1,73 @@
+
+You are tasked with analyzing action sequences executed by a household service robot in a house holding scenario. Follow the rules below to process the input and generate the required output:
+1. Input Overview
+You will receive three pieces of information in the following fixed format:
+House_content: A string listing all details of the house, including the names of rooms, furniture, and items and their locations(e.g., "Rooms: Living Room, Bedroom; Furniture: Sofa (Living Room), Bed (Bedroom); Items: Remote Control (on Sofa), Pillow (on Bed)").
+Action_sequence: A sequence of actions performed by the household service robot. Note: All actions in this sequence are executable and have been successfully completed (no need to check feasibility).
+Instruction: A specific household task that the service robot is required to complete (e.g., "Put the remote control from the sofa into the bedroom drawer").
+2. Task Steps
+You must complete three core tasks in order:
+a. Summarize the Action Sequence: Clearly and specifically describe what the robot’s action sequence actually accomplished. This summary should be a factual report of the actions taken. Avoid vague descriptions; include key details like "which item was moved from where to where" or "which furniture was operated in which room".
+b. Evaluate Task Completion and Performance: Analyze whether the action sequence fulfills the given Instruction. Your analysis must:
+Link to details from House_content (e.g., reference specific rooms, furniture, or items mentioned in House_content).
+Explicitly point out strengths (what the action sequence did well to support task completion) and shortcomings (if any gaps exist between the actions and the InstructionIdentify any shortcomings, inefficiencies, or parts of the instruction that were missed (areas for improvement).).
+c. Determine the Result: Classify the task completion quality into one of three categories based on your evaluation:
+Good: The action sequence fully and effectively fulfills the Instruction with no gaps or improvements needed.
+Normal: The action sequence completes the core requirement of the Instruction but has room for optimization (e.g., redundant steps, or failure to optimize item placement as logically expected).
+Bad: The action sequence fails to meet the explicit requirements of the Instruction (e.g., moves the wrong item, places the item in an incorrect location, or does not perform key actions required by the Instruction).
+3. Evaluate Rule
+a. All content included in "House_content" represents the only interactive items available, and the robot’s actions are restricted to these items. When conducting evaluations, you must base your analysis exclusively on the items listed in House_content—under no circumstances should you give negative feedback on the action plan by referring to items that do not exist in House_content.
+b. I will provide you with all the actions that the agent can perform. These actions represent the boundaries of the agent's capabilities. All your evaluations must take into account all feasible actions. Do not give negative evaluations of action sequences for matters outside the agent's capabilities. Actins: 
+navigate: Moves an agent from one location to another.
+
+pick_from_surface: Picks up an object from a surface.
+
+place_on_surface: Places an object onto a surface.
+
+pick_from_receptacle: Picks up an object from an open receptacle.
+
+place_in_receptacle: Places an object into an open receptacle.
+
+open: Opens a receptacle or device that can be opened.
+
+close: Closes an open receptacle or device.
+
+power_on: Turns on a powerable device.
+
+power_off: Turns off a powered-on device.
+
+fill_from_faucet: Fills a container from a faucet.
+
+dispense_from_device: Dispenses liquid from a powered-on device into a container placed on it.
+
+pour_into: Pours liquid from one container into another, potentially transferring heat.
+
+place_next_to_surface: Places an object next to another object on a surface.
+
+place_next_to_inside: Places an object next to another object inside an open receptacle.
+
+clean_item_with_faucet: Cleans an item that requires water using a faucet.
+
+clean_item: Cleans an item using a cleaning tool (for items not requiring water).
+
+clean_furniture: Cleans furniture using a cleaning tool.
+
+clean_room_floor: Cleans the floor of a room using a floor cleaner.
+
+fill_device_with_water: Fills a device with water from its built-in faucet.
+
+pour: Pours liquid from a container into a faucet-equipped furniture, emptying and cooling the container.
+
+light_on: Turns on the light of an object.
+
+move_furniture_to_room: Moves furniture (and the agent) from one room to another.
+
+move_device_to_room: Moves a device (and the agent) from one room to another.
+
+hand_over_to_person: Hands over an object from the agent to a person.
+
+4. Output Format (Mandatory)
+You must generate output strictly using the following three labeled sections. Do not add extra content outside these sections:
+<Summary>[Write your clear, detailed summary of what the robot’s action sequence accomplished—include key details like item, location, and action results.]</Summary>
+<Evaluate>[Write your analysis: First link to specific details from House_content, then explain the strengths of the action sequence for completing the Instruction, and finally note any shortcomings (if there are none, write "No shortcomings were found").]</Evaluate>
+<Result>[Write one of the three options: Good / Normal / Bad]</Result> 
