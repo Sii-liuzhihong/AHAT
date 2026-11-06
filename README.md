@@ -1,23 +1,78 @@
-# TGPO: Trace-Guided Policy Optimization
+# TGPO: Trace-Guided Policy Optimization for Robot Task Planning via Verifiable Subgoal Generation
+
+**Zhihong Liu\*, Yang Li\*, Renming Huang, Chendong Zeng, Cewu Lu, Panpan Cai**
+
+\* Equal contribution · NeurIPS 2026
 
 [Paper](https://arxiv.org/abs/2602.12244) ·
-[Project page](https://sii-liyang2024.github.io/ahat/) ·
+[Project page](https://tgpo2026.github.io/TGPO/) ·
 [Model](https://huggingface.co/Sii-liuzhihong/AHAT-TGPO) ·
 [Dataset](https://huggingface.co/datasets/SII-liyang2024/AHAT-dataset)
 
-This repository contains **Trace-Guided Policy Optimization (TGPO)**, the training
-method used in **AHAT: Any House Any Task**. It provides supervised fine-tuning,
-TGPO reinforcement learning, model inference, and subgoal evaluation for
-long-horizon household planning.
+**TGPO learns to turn abstract language instructions into verifiable PDDL
+subgoals for long-horizon robot task planning.** Given an instruction and a scene
+graph, the policy generates a decomposition trace and grounded subgoals. A symbolic
+planner solves the subgoals sequentially, propagating the scene state and composing
+the resulting action plan.
 
-TGPO uses external feedback to repair reasoning traces in selected low-reward
-rollout groups, generates continuations with the policy, and replaces samples
-only when their scores improve. It then applies the existing GRPO update.
-Training rewards and offline evaluation share one task evaluator.
+This repository provides the **verl-based SFT → TGPO training pipeline**, local
+model inference, data-format utilities, and PDDL-based subgoal evaluation. The
+repository and released Hugging Face artifacts retain their original **AHAT**
+names.
 
-![TGPO training within AHAT](assets/ahat-method-overview.jpg)
+## Method overview
 
-![AHAT planning pipeline](assets/ahat-pipeline.png)
+TGPO addresses sparse and noisy planning rewards with external correction of
+intermediate reasoning traces:
+
+1. **Initialize with SFT.** Fine-tune a structured subgoal-generation policy; the
+   paper uses Qwen2.5-7B as the base model.
+2. **Sample and verify.** Generate a group of reasoning traces and PDDL subgoals.
+   Reward combines symbolic feasibility and instruction completion:
+   `R = R_feasibility × R_completion`.
+3. **Correct traces and sample again.** An auxiliary model uses task context and
+   reviewer feedback to revise reasoning traces. The policy then generates
+   subgoals conditioned on those corrected traces.
+4. **Optimize the policy.** Use group-relative advantages and the clipped GRPO
+   objective. Corrected trace tokens are included in full-sequence log-probability
+   computation and policy updates.
+
+![TGPO data construction, SFT initialization, and trace-guided reinforcement learning](assets/ahat-method-overview.jpg)
+
+The released implementation retains fixed-size rollout groups. It selects samples
+for refinement only when all rewards in a group are below the configured
+threshold, scores policy-generated continuations, and replaces an original sample
+only on strict improvement. This differs from the augmented-group presentation in
+Section 4 of the paper; the implementation rules are documented in the
+[training notes](docs/tgpo/upstream_training_notes.md).
+
+![Scene-graph-conditioned planning with grounded subgoals and a symbolic planner](assets/ahat-pipeline.png)
+
+## Results reported in the paper
+
+Success rates (%) from **Table 2** of the paper. Easy, Complex, and
+Abstract are in-distribution synthetic tasks; Human, PARTNR, and BEHAVIOR-1K
+evaluate generalization beyond that task distribution.
+
+| Method | Easy | Complex | Abstract | Human | PARTNR | BEHAVIOR-1K |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| SFT | 83.2 ± 0.5 | 71.1 ± 0.6 | 38.1 ± 1.7 | 55.8 ± 2.2 | 71.7 ± 1.3 | 63.7 ± 1.1 |
+| GRPO | 84.1 ± 0.8 | 76.0 ± 0.2 | 51.1 ± 2.4 | 65.9 ± 2.6 | 76.4 ± 0.9 | 67.1 ± 0.8 |
+| Reinforce++ | 83.7 ± 0.6 | 77.1 ± 0.3 | 54.0 ± 1.5 | 65.5 ± 3.3 | 75.2 ± 1.2 | 68.3 ± 1.3 |
+| **TGPO (Subgoal)** | **88.1 ± 0.4** | **77.3 ± 0.4** | **70.2 ± 1.8** | **73.6 ± 1.9** | **82.6 ± 0.5** | **70.3 ± 0.8** |
+
+On Abstract tasks, TGPO improves over GRPO by **19.1 percentage points** and over
+SFT by **32.1 percentage points**. These are high-level planning results; the
+paper reports low-level execution separately in Section 6.4.
+
+Paper results use benchmark-specific evaluation (Section 6 and Appendix C).
+Synthetic and human tasks use a multi-perspective, two-model LLM rubric;
+PARTNR and BEHAVIOR-1K use their benchmark goal checks. The public CLI below
+provides PDDL validation and optional single-review scoring. The multi-perspective
+rubric, benchmark simulator integrations, stochastic MCTS planner, and low-level
+robot executor are outside this release.
+
+## Release scope
 
 The framework base is verl commit `a7b8675f9674999e2c6b75a402d95837eca40a3d`;
 see [UPSTREAM.md](UPSTREAM.md) for provenance and the original snapshot differences.
@@ -48,7 +103,7 @@ produces a real action plan. Results, metrics and version/configuration hashes
 are written separately. The recipe wrapper selects only the first candidate,
 matching the historical script; the API/CLI can also score all candidates.
 
-Full scoring additionally reviews the plan using an OpenAI-compatible endpoint:
+To include task-completion review, configure an OpenAI-compatible endpoint:
 
 ```bash
 export OPENAI_BASE_URL=http://localhost:8000/v1
@@ -60,7 +115,8 @@ python -m robot_planning.evaluation.cli \
   --output-dir outputs/reviewed_eval --mode validate_first --repeats 1
 ```
 
-`Good`, `Normal`, `Bad` map to 1, 0.5, 0. The final score is validation × review.
+`Good`, `Normal`, `Bad` map to 1, 0.5, 0. The final score is validation × review;
+`only_validate` measures feasibility alone.
 With `--repeats 2`, the **entire** evaluator runs twice and the lower-score result
 is selected; ties select the second result. See [evaluation.md](docs/tgpo/evaluation.md).
 
@@ -133,10 +189,18 @@ N_GPUS=8 bash recipe/tgpo/train_tgpo.sh
 ```
 
 Replace `STEP` with the saved step. Repair/review use the endpoint configured
-above; workers also need access to the domain and planner executable. Recipe
-configs represent a candidate historical configuration, rather than an
-author-confirmed main-result preset. For fewer GPUs, override batch sizes and
-rollout tensor parallelism together. Details are in [recipe/tgpo](recipe/tgpo/README.md).
+above; workers also need access to the domain and planner executable. For fewer
+GPUs, override batch sizes and rollout tensor parallelism together.
+
+**Paper settings and recipe defaults.** Appendix B reports SFT with batch size
+32, 3 epochs, a 15,000-token cutoff and learning rate `5e-6`; GRPO/TGPO use batch
+size 128, mini-batch size 32, 8 rollouts, and learning rate `5e-6`, with 2 traces
+selected per rollout group for TGPO. The paper uses 8×H200 GPUs and
+Qwen3-235B-A22B-Thinking-2507 for trace refinement. The checked-in recipes are
+historical configurations: SFT currently defaults to batch size 128, 1 epoch and
+length 18,096, while TGPO defaults to learning rate `1e-6`. They are not yet an
+author-confirmed preset for reproducing the main results. See
+[recipe/tgpo](recipe/tgpo/README.md) for configuration and endpoint details.
 
 Export a TGPO checkpoint from `outputs/tgpo/global_step_STEP/actor` using the same
 upstream merger. Generate predictions and optionally score them in one command:
@@ -196,13 +260,13 @@ See [repository migration](docs/tgpo/ahat_integration.md) for integration detail
 
 ## Citation
 
-TGPO is the training method introduced in the AHAT paper:
+If you use TGPO in your research, please cite:
 
 ```bibtex
-@article{liu2026ahat,
-  title={Any House Any Task: Scalable Long-Horizon Planning for Abstract Human Tasks},
-  author={Liu, Zhihong and Li, Yang and Huang, Rengming and Lu, Cewu and Cai, Panpan},
-  journal={arXiv preprint arXiv:2602.12244},
+@inproceedings{liu2026tgpo,
+  title={TGPO: Trace-Guided Policy Optimization for Robot Task Planning via Verifiable Subgoal Generation},
+  author={Liu, Zhihong and Li, Yang and Huang, Renming and Zeng, Chendong and Lu, Cewu and Cai, Panpan},
+  booktitle={Advances in Neural Information Processing Systems},
   year={2026}
 }
 ```
